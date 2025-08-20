@@ -9,7 +9,7 @@ import { SystemStatus } from "./SystemStatus";
 export function RightSideBar() {
   return <View style={styles.rightSidebar}>
     <RightSidebarHeader />
-    <ScrollView style={styles.sidebarContent} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.sidebarContent} contentContainerStyle={styles.sidebarContentContainer} showsVerticalScrollIndicator={false}>
       <SystemStatus />
       <PerformanceStats />
       <RecentActivity />
@@ -27,16 +27,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#16213e',
   },
-  sidebar: {
-    width: 120,
-    backgroundColor: '#1a1a2e',
-    borderRadius: 12,
-    marginRight: 12,
-    borderWidth: 1,
-    borderColor: '#16213e',
-  },
   sidebarContent: {
     flex: 1,
-    padding: 8,
+  },
+  sidebarContentContainer: {
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    flexGrow: 1,
   },
 })

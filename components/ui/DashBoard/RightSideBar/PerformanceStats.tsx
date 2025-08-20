@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#1e293b',
+    alignItems: 'center',
+    width: '100%',
   },
   infoCardTitle: {
     fontSize: 12,
@@ -42,12 +44,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+    textAlign: 'center',
   },
   perfItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 4,
+    width: '100%',
   },
   perfLabel: {
     fontSize: 11,
@@ -64,6 +68,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     marginBottom: 12,
     overflow: 'hidden',
+    width: '100%',
   },
   perfBarFill: {
     height: '100%',

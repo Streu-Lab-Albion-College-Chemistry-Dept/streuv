@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#1e293b',
+    alignItems: 'center',
+    width: '100%',
   },
   infoCardTitle: {
     fontSize: 12,
@@ -38,6 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+    textAlign: 'center',
   },
   quickStat: {
     alignItems: 'center',

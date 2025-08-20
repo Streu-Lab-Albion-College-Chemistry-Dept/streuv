@@ -28,34 +28,36 @@ interface DropdownProps {
   value: string;
   options: string[];
   onSelect: (value: string) => void;
+  placeholder?: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSelect }) => {
+const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSelect, placeholder = "Select..." }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <View style={styles.dropdownContainer}>
-      <Text style={styles.label}>{label}</Text>
+    <View style={styles.dropdown}>
       <TouchableOpacity
-        style={styles.dropdownButton}
+        style={styles.dropdownBtn}
         onPress={() => setIsOpen(!isOpen)}
       >
-        <Text style={styles.dropdownText}>{value || 'Select...'}</Text>
-        <Text style={styles.dropdownArrow}>{isOpen ? '▲' : '▼'}</Text>
+        <Text style={[styles.dropdownText, !value && styles.placeholder]}>
+          {value || placeholder}
+        </Text>
+        <Text style={styles.arrow}>{isOpen ? '▲' : '▼'}</Text>
       </TouchableOpacity>
       
       {isOpen && (
-        <View style={styles.dropdownMenu}>
+        <View style={styles.menu}>
           {options.map((option) => (
             <TouchableOpacity
               key={option}
-              style={styles.dropdownOption}
+              style={styles.option}
               onPress={() => {
                 onSelect(option);
                 setIsOpen(false);
               }}
             >
-              <Text style={styles.dropdownOptionText}>{option}</Text>
+              <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -125,7 +127,7 @@ export default function RelayForm({ onCancel }: RelayFormProps) {
           date: new Date().toISOString().split('T')[0],
           description: '',
         })
-      : Alert.alert('Error', 'Slot already takenj')
+      : Alert.alert('Error', 'Slot already taken')
   };
 
   const updateTimeConfig = (type: 'duration' | 'delay', field: keyof TimeConfig, value: string) => {
@@ -140,284 +142,260 @@ export default function RelayForm({ onCancel }: RelayFormProps) {
   };
 
   return (
-    <View style={styles.formContainer}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.formTitle}>Create Experiment Session</Text>
-        
-        {/* Creator */}
-        <Text style={styles.label}>Creator *</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>New Experiment</Text>
+      
+      <View style={styles.form}>
         <TextInput
           style={styles.input}
           value={formData.creator}
           onChangeText={(text) => setFormData(prev => ({ ...prev, creator: text }))}
-          placeholder="Enter creator name"
+          placeholder="Creator name"
           placeholderTextColor="#9ca3af"
         />
 
-        {/* Role */}
         <Dropdown
-          label="Role *"
+          label=""
           value={formData.role}
           options={roleOptions}
           onSelect={(value) => setFormData(prev => ({ ...prev, role: value as Role }))}
+          placeholder="Select role"
         />
 
-        {/* Email */}
-        <Text style={styles.label}>Email *</Text>
         <TextInput
           style={styles.input}
           value={formData.email}
           onChangeText={(text) => setFormData(prev => ({ ...prev, email: text }))}
-          placeholder="Enter email address"
+          placeholder="Email"
           placeholderTextColor="#9ca3af"
           keyboardType="email-address"
+          autoCapitalize="none"
         />
 
-        {/* Slot */}
         <Dropdown
-          label="Relay Slot *"
+          label=""
           value={formData.slot}
           options={slotOptions}
           onSelect={(value) => setFormData(prev => ({ ...prev, slot: value as RelaySlot }))}
+          placeholder="Select slot"
         />
 
-        {/* Duration */}
-        <Text style={styles.sectionTitle}>Duration</Text>
-        <View style={styles.timeRow}>
-          {['hours','minutes','seconds'].map((f) => (
-            <View style={styles.timeInput} key={f}>
-              <Text style={styles.timeLabel}>{f}</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.duration[f as keyof TimeConfig].toString()}
-                onChangeText={(text) => updateTimeConfig('duration', f as keyof TimeConfig, text)}
-                keyboardType="numeric"
-                placeholder="0"
-              />
-            </View>
-          ))}
+        <View style={styles.timeSection}>
+          <Text style={styles.timeTitle}>Duration</Text>
+          <View style={styles.timeRow}>
+            <TextInput
+              style={styles.timeInput}
+              value={formData.duration.hours.toString()}
+              onChangeText={(text) => updateTimeConfig('duration', 'hours', text)}
+              placeholder="0h"
+              placeholderTextColor="#9ca3af"
+              keyboardType="numeric"
+              maxLength={2}
+            />
+            <TextInput
+              style={styles.timeInput}
+              value={formData.duration.minutes.toString()}
+              onChangeText={(text) => updateTimeConfig('duration', 'minutes', text)}
+              placeholder="30m"
+              placeholderTextColor="#9ca3af"
+              keyboardType="numeric"
+              maxLength={2}
+            />
+          </View>
         </View>
 
-        {/* Delay */}
-        <Text style={styles.sectionTitle}>Delay</Text>
-        <View style={styles.timeRow}>
-          {['hours','minutes','seconds'].map((f) => (
-            <View style={styles.timeInput} key={f}>
-              <Text style={styles.timeLabel}>{f}</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.delay[f as keyof TimeConfig].toString()}
-                onChangeText={(text) => updateTimeConfig('delay', f as keyof TimeConfig, text)}
-                keyboardType="numeric"
-                placeholder="0"
-              />
-            </View>
-          ))}
-        </View>
-
-        {/* Cycles */}
-        <Text style={styles.label}>Cycles</Text>
         <TextInput
-          style={styles.input}
-          value={formData.cycles.toString()}
-          onChangeText={(text) => setFormData(prev => ({ ...prev, cycles: parseInt(text) || 1 }))}
-          keyboardType="numeric"
-          placeholder="1"
-        />
-
-        {/* Date */}
-        <Text style={styles.label}>Date</Text>
-        <TextInput
-          style={styles.input}
-          value={formData.date}
-          onChangeText={(text) => setFormData(prev => ({ ...prev, date: text }))}
-          placeholder="YYYY-MM-DD"
-          placeholderTextColor="#9ca3af"
-        />
-
-        {/* Description */}
-        <Text style={styles.label}>Description *</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
+          style={[styles.input, styles.description]}
           value={formData.description}
           onChangeText={(text) => setFormData(prev => ({ ...prev, description: text }))}
-          placeholder="Enter experiment description"
+          placeholder="Description"
           placeholderTextColor="#9ca3af"
           multiline
           numberOfLines={3}
+          textAlignVertical="top"
         />
+      </View>
 
-        {/* Buttons */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.cancelButton]}
-            onPress={onCancel}
-          >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[styles.button, styles.submitButton]}
-            onPress={handleSubmit}
-          >
-            <Text style={styles.submitButtonText}>Create</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.cancelBtn} onPress={onCancel}>
+          <Text style={styles.cancelText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.createBtn} onPress={handleSubmit}>
+          <Text style={styles.createText}>Create</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 
 const styles = StyleSheet.create({
-  formContainer: {
+  container: {
     backgroundColor: '#ffffff',
-    borderRadius: 8,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    width: 400,
-    maxHeight: 500,
+    borderRadius: 12,
+    padding: 24,
+    width: 380,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
   },
   
-  formTitle: {
-    fontSize: 16,
+  title: {
+    fontSize: 20,
     fontWeight: '600',
-    color: '#1f2937',
-    marginBottom: 16,
+    color: '#111827',
+    marginBottom: 24,
     textAlign: 'center',
   },
-
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
-    marginTop: 8,
-    marginBottom: 8,
-  },
   
-  label: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: 6,
-  },
-
-  timeLabel: {
-    fontSize: 11,
-    fontWeight: '500',
-    color: '#6b7280',
-    marginBottom: 4,
+  form: {
+    gap: 16,
   },
   
   input: {
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    fontSize: 13,
-    color: '#374151',
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#111827',
     backgroundColor: '#ffffff',
-    marginBottom: 12,
   },
-
-  textArea: {
-    height: 60,
+  
+  description: {
+    height: 80,
     textAlignVertical: 'top',
   },
-
+  
+  timeSection: {
+    marginVertical: 8,
+  },
+  
+  timeTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6b7280',
+    marginBottom: 8,
+  },
+  
   timeRow: {
     flexDirection: 'row',
-    gap: 8,
-    marginBottom: 12,
+    gap: 12,
   },
-
+  
   timeInput: {
     flex: 1,
-  },
-
-  dropdownContainer: {
-    marginBottom: 12,
-  },
-
-  dropdownButton: {
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#111827',
+    backgroundColor: '#ffffff',
+    textAlign: 'center',
+  },
+  
+  dropdown: {
+    position: 'relative',
+    zIndex: 1000,
+  },
+  
+  dropdownBtn: {
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: '#ffffff',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-
+  
   dropdownText: {
-    fontSize: 13,
-    color: '#374151',
+    fontSize: 16,
+    color: '#111827',
   },
-
-  dropdownArrow: {
-    fontSize: 10,
+  
+  placeholder: {
+    color: '#9ca3af',
+  },
+  
+  arrow: {
+    fontSize: 12,
     color: '#6b7280',
   },
-
-  dropdownMenu: {
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 6,
+  
+  menu: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
     backgroundColor: '#ffffff',
-    marginTop: 2,
-    maxHeight: 120,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderTopWidth: 0,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    maxHeight: 150,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 1001,
   },
-
-  dropdownOption: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+  
+  option: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
   },
-
-  dropdownOptionText: {
-    fontSize: 13,
-    color: '#374151',
+  
+  optionText: {
+    fontSize: 16,
+    color: '#111827',
   },
   
-  buttonContainer: {
+  actions: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 16,
+    gap: 12,
+    marginTop: 24,
   },
   
-  button: {
+  cancelBtn: {
     flex: 1,
-    paddingVertical: 10,
-    borderRadius: 6,
+    paddingVertical: 12,
+    borderRadius: 8,
+    backgroundColor: '#f9fafb',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
     alignItems: 'center',
   },
   
-  cancelButton: {
-    backgroundColor: '#f3f4f6',
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-  },
-  
-  submitButton: {
+  createBtn: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
     backgroundColor: '#3b82f6',
+    alignItems: 'center',
   },
   
-  cancelButtonText: {
-    fontSize: 13,
+  cancelText: {
+    fontSize: 16,
     fontWeight: '500',
     color: '#6b7280',
   },
   
-  submitButtonText: {
-    fontSize: 13,
+  createText: {
+    fontSize: 16,
     fontWeight: '500',
     color: '#ffffff',
   },
-
 });
 

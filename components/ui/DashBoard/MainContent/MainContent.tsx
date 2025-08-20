@@ -1,5 +1,5 @@
 import { Header } from "./Header";
-import { ScrollView, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { ApplicationSession, RelaySlot, ExperimentSession } from "../../../../shared/types";
 import { ActiveExperiments } from "./ActiveExperiments";
 import { AddExperiment } from "./AddExperiment";
@@ -27,32 +27,40 @@ export function MainContent({
   formatDuration,
   formatTimeRemaining
 }: IMainContent) {
-  return <ScrollView style={styles.mainContent} showsVerticalScrollIndicator={false}>
-    {/* Header */}
-    <Header session={session} />
-    {/* Stats Overview */}
-    <StatsOverView
-      totalExperiments={totalExperiments}
-      activeExperiments={activeExperiments}
-      completedExperiments={completedExperiments} />
+  return <View style={styles.mainContent}>
+    <View style={styles.mainContentContainer}>
+      {/* Header Row */}
+      <View style={styles.headerRow}>
+        <Header session={session} />
+        <StatsOverView
+          totalExperiments={totalExperiments}
+          activeExperiments={activeExperiments}
+          completedExperiments={completedExperiments}
+          experiments={experiments} />
+      </View>
 
-    {/* Add Experiment */}
-    <AddExperiment />
+      {/* Content Row */}
+      <View style={styles.contentRow}>
+        {/* Left Column - Form */}
+        <View style={styles.leftColumn}>
+          <AddExperiment />
+        </View>
 
-    {/* Active Experiments */}
-    {experiments.length > 0 && (
-      <ActiveExperiments
-        experiments={experiments}
-        deleteSession={deleteSession}
-        formatDuration={formatDuration}
-        formatTimeRemaining={formatTimeRemaining} />
-    )}
-
-    {/* Empty State */}
-    {experiments.length === 0 && (
-      <EmptyState />
-    )}
-  </ScrollView>;
+        {/* Right Column - Experiments */}
+        <View style={styles.rightColumn}>
+          {experiments.length > 0 ? (
+            <ActiveExperiments
+              experiments={experiments}
+              deleteSession={deleteSession}
+              formatDuration={formatDuration}
+              formatTimeRemaining={formatTimeRemaining} />
+          ) : (
+            <EmptyState />
+          )}
+        </View>
+      </View>
+    </View>
+  </View>;
 }
 
 const styles = StyleSheet.create({
@@ -60,9 +68,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1a1a2e',
     borderRadius: 12,
-    padding: 16,
     borderWidth: 1,
     borderColor: '#16213e',
-    marginRight: 12,
+    marginHorizontal: 12,
+  },
+  mainContentContainer: {
+    flex: 1,
+    padding: 16,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    height: 120,
+  },
+  contentRow: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: 16,
+  },
+  leftColumn: {
+    flex: 1,
+  },
+  rightColumn: {
+    flex: 1,
   },
 })

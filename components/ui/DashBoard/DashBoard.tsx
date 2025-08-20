@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#0f0f23',
     padding: 12,
+    gap: 12,
   },  
 });
 

@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#1e293b',
+    alignItems: 'center',
+    width: '100%',
   },
   infoCardTitle: {
     fontSize: 12,
@@ -39,20 +41,25 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+    textAlign: 'center',
   },
   logItem: {
     marginBottom: 8,
     paddingBottom: 6,
     borderBottomWidth: 1,
     borderBottomColor: '#1e293b',
+    width: '100%',
+    alignItems: 'center',
   },
   logTime: {
     fontSize: 9,
     color: '#475569',
     marginBottom: 2,
+    textAlign: 'center',
   },
   logEvent: {
     fontSize: 10,
     lineHeight: 12,
+    textAlign: 'center',
   },
 })

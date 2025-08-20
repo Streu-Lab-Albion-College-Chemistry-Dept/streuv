@@ -15,7 +15,7 @@ export function SideBar({
   return <View style={styles.sidebar}>
     <SidebarHeader />
 
-    <ScrollView style={styles.sidebarContent} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.sidebarContent} contentContainerStyle={styles.sidebarContentContainer} showsVerticalScrollIndicator={false}>
       {allSlots.map((slot) => {
         const experiment = experiments.find(([s, _]) => s === slot);
         const gauranteedExp = experiment as NonNullable<typeof experiment>
@@ -40,13 +40,15 @@ const styles = StyleSheet.create({
     width: 120,
     backgroundColor: '#1a1a2e',
     borderRadius: 12,
-    marginRight: 12,
     borderWidth: 1,
     borderColor: '#16213e',
   },
-  
   sidebarContent: {
     flex: 1,
-    padding: 8,
+  },
+  sidebarContentContainer: {
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    flexGrow: 1,
   },
 })

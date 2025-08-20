@@ -1,32 +1,30 @@
-import { Text, View, StyleSheet } from "react-native";
-import RelayIcon from "../../../RelayCard";
+import { View, StyleSheet } from "react-native";
+import { QuickExperimentForm } from "./QuickExperimentForm";
 
 export function AddExperiment() {
   return <View style={styles.addSection}>
-    <Text style={styles.sectionTitle}>Add New Experiment</Text>
-    <View style={styles.relayIconContainer}>
-      <RelayIcon />
+    <View style={styles.addContent}>
+      <View style={styles.formSection}>
+        <QuickExperimentForm />
+      </View>
     </View>
   </View>;
 }
 
 const styles = StyleSheet.create({
   addSection: {
-    marginBottom: 24,
+    flex: 1,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#f1f5f9',
-    marginBottom: 16,
-  },
-  relayIconContainer: {
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#0f172a',
+  addContent: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.5)',
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#1e293b',
-    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: 'rgba(30, 41, 59, 0.8)',
+    overflow: 'hidden',
+  },
+  formSection: {
+    flex: 1,
+    padding: 20,
   },
 })
